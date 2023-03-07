@@ -1,28 +1,39 @@
-function isValid (inputEl, warningEl) {
-  warningEl.classList.add('invisible');
-  inputEl.classList.remove('is-invalid');
-  inputEl.classList.add('is-valid');
-  inputEl.value = '';
-}
+import i18n from 'i18next';
+import resources from './locales/en.js';
 
-function isInvalid (inputEl, warningEl) {
+const i18nInstance = i18n.createInstance();
+i18nInstance
+    .init({
+      lng: 'en',
+      debug: true,
+      resources: {
+        en: {
+          translation: resources.translation
+        }
+      },
+    });
+
+export default function changeForm (status, inputEl, warningEl) {
   warningEl.classList.remove('invisible');
-  warningEl.textContent = 'Ссылка должна быть валидным URL';
-  inputEl.classList.remove('is-valid');
-  inputEl.classList.add('is-invalid');
+  warningEl.classList.add('text-success');
+  warningEl.classList.add('text-danger');
+  warningEl.textContent = i18nInstance.t(`warning_${status}`);
+
+  switch (status) {
+    case 'neutral':
+      warningEl.classList.add('invisible');
+      inputEl.classList.remove('is-invalid');
+      inputEl.classList.remove('is-valid');
+      inputEl.value = '';
+      break;
+    case 'valid':
+      warningEl.classList.remove('text-danger');
+      inputEl.classList.remove('is-invalid');
+      inputEl.classList.add('is-valid');
+      inputEl.value = '';
+      break;
+    default:
+      inputEl.classList.remove('is-valid');
+      inputEl.classList.add('is-invalid');
+  }
 }
-
-function existsLink (inputEl, warningEl) {
-  warningEl.classList.remove('invisible');
-  warningEl.textContent = 'RSS уже существует';
-  inputEl.classList.remove('is-valid');
-  inputEl.classList.add('is-invalid');
-}
-
-const changeForm = {
-  valid: isValid,
-  invalid: isInvalid,
-  exists: existsLink,
-};
-
-export default changeForm;

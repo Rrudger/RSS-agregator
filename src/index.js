@@ -4,7 +4,7 @@ import "../node_modules/bootstrap/scss/bootstrap.scss";
 
 import onChange from 'on-change';
 import * as yup from 'yup';
-import formFunctions from './formChangeFunctions.js';
+import formReset from './formChangeFunctions.js';
 
 const schema = yup.string().required().url();
 
@@ -14,19 +14,28 @@ const warninig = document.getElementsByClassName('feedback')[0];
 
 let linkList = [];
 
+
+
+const state = {
+    validateStatus: 'neutral',
+  };
+
+const resetForm = () => formReset(watchedState.validateStatus, formInput, warninig);
+const watchedState = onChange(state, resetForm);
+
 form.addEventListener("submit", validateFunc);
 
 function validateFunc (e) {
   e.preventDefault();
   const link = formInput.value;
 
-  linkList.includes(link) ? formFunctions['exists'](formInput, warninig) : schema
+  linkList.includes(link) ? watchedState.validateStatus = 'exists' : schema
   .validate(formInput.value)
   .then(function() {
-    formFunctions['valid'](formInput, warninig);
+    watchedState.validateStatus = 'valid';
     linkList = [link, ...linkList];
 })
   .catch(function(err) {
-    formFunctions['invalid'](formInput, warninig);
+    watchedState.validateStatus = 'invalid';
 });
 }
