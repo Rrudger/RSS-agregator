@@ -9,6 +9,10 @@ build:
 serve:
 	npm run serve
 
+run:
+	make build
+	make serve
+
 lint:
 	npx eslint .
 
