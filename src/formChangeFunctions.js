@@ -1,6 +1,4 @@
-
-
-function changeFormStatus (status, i18nInstance) {
+function changeFormStatus(status, i18nInstance) {
   const inputEl = document.getElementById('url-input');
   const warningEl = document.getElementsByClassName('feedback')[0];
 
@@ -28,7 +26,6 @@ function changeFormStatus (status, i18nInstance) {
   }
 }
 
-
 function renderFeed(chanel) {
   const listItem = document.createElement('li');
   const classes = ['list-group-item', 'border-0', 'border-end-0'];
@@ -38,18 +35,23 @@ function renderFeed(chanel) {
   return listItem;
 }
 
-function renderPost (post) {
+function renderPost(post) {
   const listItem = document.createElement('li');
   listItem.classList.add(...['list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0']);
   listItem.innerHTML = `<a href=${post.getElementsByTagName('link')[0].textContent} class="fw-bold" data-id="23" target="_blank" rel="noopener noreferrer">${post.getElementsByTagName('title')[0].textContent}</a><button type="button" class="btn btn-outline-primary btn-sm" data-id="23" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button>`;
   return listItem;
 }
 
-function createCard (cardName) {
+function createCard(cardName) {
   const card = document.createElement('div');
   card.classList.add(...['card', 'border-0']);
   card.innerHTML = `<div class="card-body"><h2 class="card-title h4">${cardName}</h2></div><ul class="list-group border-0 rounded-0"></ul>`;
   return card;
 }
 
-export {changeFormStatus, createCard, renderFeed, renderPost};
+export {
+  changeFormStatus,
+  createCard,
+  renderFeed,
+  renderPost,
+};
