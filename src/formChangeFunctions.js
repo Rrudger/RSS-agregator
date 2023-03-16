@@ -13,15 +13,12 @@ function changeFormStatus(status, i18nInstance) {
     case 'neutral':
       warningEl.classList.add('invisible');
       inputEl.classList.remove('is-invalid');
-      //inputEl.classList.remove('is-valid');
       break;
     case 'valid':
       warningEl.classList.remove('text-danger');
       inputEl.classList.remove('is-invalid');
-      //inputEl.classList.add('is-valid');
       break;
     default:
-      //inputEl.classList.remove('is-valid');
       inputEl.classList.add('is-invalid');
   }
 }
@@ -29,13 +26,13 @@ function changeFormStatus(status, i18nInstance) {
 function markViewedPost(id) {
   const link = document.getElementById(id).getElementsByTagName('a')[0];
   link.classList.remove('fw-bold');
-  link.classList.add(...['fw-normal', 'link-secondary'])
+  link.classList.add(...['fw-normal', 'link-secondary']);
 }
 
 function renderFeed(chanel, id, url) {
   const listItem = document.createElement('li');
   listItem.setAttribute('id', id);
-  listItem.setAttribute('url-chanel', url)
+  listItem.setAttribute('url-chanel', url);
   listItem.classList.add(...['list-group-item', 'border-0', 'border-end-0']);
   listItem.innerHTML = `<h3 class="h6 m-0">${chanel.getElementsByTagName('title')[0].textContent}</h3>
   <p class="m-0 small text-black-50">${chanel.getElementsByTagName('description')[0].textContent}</p>`;
