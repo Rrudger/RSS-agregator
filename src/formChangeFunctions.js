@@ -1,3 +1,5 @@
+import { uniqueId } from 'lodash';
+
 function changeFormStatus(status, i18nInstance) {
   const inputEl = document.getElementById('url-input');
   const warningEl = document.getElementsByClassName('feedback')[0];
@@ -11,41 +13,70 @@ function changeFormStatus(status, i18nInstance) {
     case 'neutral':
       warningEl.classList.add('invisible');
       inputEl.classList.remove('is-invalid');
-      inputEl.classList.remove('is-valid');
-      inputEl.value = '';
+      //inputEl.classList.remove('is-valid');
       break;
     case 'valid':
       warningEl.classList.remove('text-danger');
       inputEl.classList.remove('is-invalid');
-      inputEl.classList.add('is-valid');
-      inputEl.value = '';
+      //inputEl.classList.add('is-valid');
       break;
     default:
-      inputEl.classList.remove('is-valid');
+      //inputEl.classList.remove('is-valid');
       inputEl.classList.add('is-invalid');
   }
 }
 
-function renderFeed(chanel) {
+function renderFeed(chanel, id, url) {
   const listItem = document.createElement('li');
-  const classes = ['list-group-item', 'border-0', 'border-end-0'];
-  listItem.classList.add(...classes);
+  listItem.setAttribute('id', id);
+  listItem.setAttribute('url-chanel', url)
+  listItem.classList.add(...['list-group-item', 'border-0', 'border-end-0']);
   listItem.innerHTML = `<h3 class="h6 m-0">${chanel.getElementsByTagName('title')[0].textContent}</h3>
   <p class="m-0 small text-black-50">${chanel.getElementsByTagName('description')[0].textContent}</p>`;
   return listItem;
 }
 
-function renderPost(post) {
+function renderPost(post, feedId) {
+  const modalId = uniqueId('modal_');
+  const modalIdBtn = `#${modalId}`;
+  const modalLabel = `${modalId}Label`;
+
   const listItem = document.createElement('li');
+
   listItem.classList.add(...['list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0']);
-  listItem.innerHTML = `<a href=${post.getElementsByTagName('link')[0].textContent} class="fw-bold" data-id="23" target="_blank" rel="noopener noreferrer">${post.getElementsByTagName('title')[0].textContent}</a><button type="button" class="btn btn-outline-primary btn-sm" data-id="23" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button>`;
+  listItem.setAttribute('feed-id', feedId);
+  listItem.innerHTML = `<a href=${post.getElementsByTagName('link')[0].textContent}
+  class="fw-bold" target="_blank" rel="noopener noreferrer">
+  ${post.getElementsByTagName('title')[0].textContent}</a>
+  <button type="button" class="btn btn-outline-primary btn-sm"
+   data-bs-toggle="modal" data-bs-target=${modalIdBtn}>Просмотр</button>
+   <div class="modal fade" id="${modalId}" tabindex='-1' aria-hidden='true' aria-labelledby='${modalLabel}'>
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id=${modalLabel}>${post.getElementsByTagName('title')[0].textContent}</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+       </div>
+       <div class="modal-body">
+         ${post.getElementsByTagName('description')[0].textContent}
+       </div>
+       <div class="modal-footer">
+         <a class="btn btn-primary full-article" href=${post.getElementsByTagName('link')[0].textContent} role="button" target="_blank" rel="noopener noreferrer">Читать полностью </a>
+         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+       </div>
+     </div>
+   </div>
+   </div>`;
+
   return listItem;
 }
 
 function createCard(cardName) {
   const card = document.createElement('div');
   card.classList.add(...['card', 'border-0']);
-  card.innerHTML = `<div class="card-body"><h2 class="card-title h4">${cardName}</h2></div><ul class="list-group border-0 rounded-0"></ul>`;
+  card.innerHTML = `<div class="card-body">
+  <h2 class="card-title h4">${cardName}
+  </h2></div><ul class="list-group border-0 rounded-0"></ul>`;
   return card;
 }
 
