@@ -26,6 +26,12 @@ function changeFormStatus(status, i18nInstance) {
   }
 }
 
+function markViewedPost(id) {
+  const link = document.getElementById(id).getElementsByTagName('a')[0];
+  link.classList.remove('fw-bold');
+  link.classList.add(...['fw-normal', 'link-secondary'])
+}
+
 function renderFeed(chanel, id, url) {
   const listItem = document.createElement('li');
   listItem.setAttribute('id', id);
@@ -36,8 +42,9 @@ function renderFeed(chanel, id, url) {
   return listItem;
 }
 
-function renderPost(post, feedId) {
-  const modalId = uniqueId('modal_');
+function renderPost(post, feedId, i18nInstance) {
+  const postId = uniqueId('post_');
+  const modalId = `modal_${postId}`;
   const modalIdBtn = `#${modalId}`;
   const modalLabel = `${modalId}Label`;
 
@@ -45,11 +52,12 @@ function renderPost(post, feedId) {
 
   listItem.classList.add(...['list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0']);
   listItem.setAttribute('feed-id', feedId);
+  listItem.setAttribute('id', postId);
   listItem.innerHTML = `<a href=${post.getElementsByTagName('link')[0].textContent}
   class="fw-bold" target="_blank" rel="noopener noreferrer">
   ${post.getElementsByTagName('title')[0].textContent}</a>
   <button type="button" class="btn btn-outline-primary btn-sm"
-   data-bs-toggle="modal" data-bs-target=${modalIdBtn}>Просмотр</button>
+   data-bs-toggle="modal" data-bs-target=${modalIdBtn}>${i18nInstance.t('buttons.view')}</button>
    <div class="modal fade" id="${modalId}" tabindex='-1' aria-hidden='true' aria-labelledby='${modalLabel}'>
    <div class="modal-dialog">
      <div class="modal-content">
@@ -82,6 +90,7 @@ function createCard(cardName) {
 
 export {
   changeFormStatus,
+  markViewedPost,
   createCard,
   renderFeed,
   renderPost,

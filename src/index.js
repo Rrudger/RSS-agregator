@@ -14,6 +14,7 @@ import i18n from 'i18next';
 import resources from './locales/ru.js';
 import {
   changeFormStatus,
+  markViewedPost,
   createCard,
   renderFeed,
   renderPost,
@@ -37,10 +38,19 @@ i18nInstance
 
 const state = {
   validateStatus: 'neutral',
+  viewedPost: '',
 };
 
-const watchedState = onChange(state, () => {
-  changeFormStatus(watchedState.validateStatus, i18nInstance);
+const watchedState = onChange(state, (path, value) => {
+  switch (path) {
+    case 'validateStatus':
+      changeFormStatus(value, i18nInstance);
+      break;
+    case 'viewedPosts':
+      markViewedPost(value);
+      break;
+  }
+  //changeFormStatus(watchedState.validateStatus, i18nInstance);
 });
 
 const parserFunc = (data) => {
@@ -56,18 +66,28 @@ const parserFunc = (data) => {
   })
 }
 
+const btnViewClick = (e) => {
+  if (e.target.textContent === i18nInstance.t('buttons.view')) {
+    watchedState.viewedPosts = e.target.parentNode.id;
+
+  }
+}
+
 const fillPostsCard = (chanel, id) => {
   const card = document.getElementsByClassName('posts')[0]
   .getElementsByTagName('ul')[0];
   const posts = chanel.getElementsByTagName('item');
-  let prevPost = renderPost([...posts].slice(0,1)[0], id);
+  let prevPost = renderPost([...posts].slice(0,1)[0], id, i18nInstance);
+  prevPost.addEventListener('click', btnViewClick)
   card.prepend(prevPost);
   [...posts].slice(1,).forEach((post) => {
     //console.log(post);
-    const newPost = renderPost(post, id);
+    const newPost = renderPost(post, id, i18nInstance);
     prevPost.after(newPost);
     prevPost = newPost;
+    prevPost.addEventListener('click', btnViewClick)
   });
+
 }
 
 const createChanell = (chanel, url) => {
@@ -82,6 +102,7 @@ const createChanell = (chanel, url) => {
 
   feedCard.getElementsByTagName('ul')[0].prepend(renderFeed(chanel, id, url));
   fillPostsCard(chanel, id);
+  //addListeners();
 }
 
 function urlProcessing(validUrl) {

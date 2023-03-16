@@ -11,5 +11,8 @@ export default {
       feeds: 'Фиды',
       posts: 'Посты',
     },
+    buttons: {
+      view: 'Просмотр',
+    },
   },
 };
