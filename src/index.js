@@ -5,6 +5,7 @@ import {
   uniqueId,
   difference,
 } from 'lodash';
+import axios from 'axios';
 import onChange from 'on-change';
 import * as yup from 'yup';
 import i18n from 'i18next';
@@ -54,6 +55,7 @@ const parserFunc = (data) => {
   const parser = new DOMParser();
   return new Promise((resolve, reject) => {
     const chanel = parser.parseFromString(data, 'application/xml');
+
     const errorNode = chanel.querySelector('parsererror');
     if (errorNode) {
       reject();
@@ -99,16 +101,10 @@ const createChanell = (chanel, url) => {
 };
 
 function urlProcessing(validUrl) {
-  fetch(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}`)
-    .then((response) => {
-      if (response.ok) return response.json();
-      watchedState.validateStatus = 'loadError';
-      throw new Error('Network response was not ok.');
-    })
-    .then((data) => parserFunc(data.contents))
+  axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}`)
+    .then((response) => parserFunc(response.data.contents))
     .catch(() => {
       watchedState.validateStatus = 'loadError';
-      throw new Error('load error');
     })
     .then((chanel) => {
       linkList = [validUrl, ...linkList];
@@ -144,15 +140,9 @@ function checkFeeds() {
       .filter((listItem) => listItem.getAttribute('feed-id') === feed.id);
     const postsTitles = postsList.map((post) => post.getElementsByTagName('a')[0].textContent.trim());
 
-    fetch(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}`)
-      .then((response) => {
-        if (response.ok) return response.json();
-        watchedState.validateStatus = 'loadError';
-        throw new Error('Network response was not ok.');
-      })
-      .then((data) => parserFunc(data.contents))
+    axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}`)
+      .then((response) => parserFunc(response.data.contents))
       .catch(() => {
-        throw new Error('load error');
       })
       .then((chanel) => {
         const loadedPosts = [...chanel.getElementsByTagName('item')]
