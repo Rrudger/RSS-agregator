@@ -34,6 +34,9 @@ i18nInstance
     },
   });
 
+
+
+
 const state = {
   validateStatus: 'neutral',
   viewedPost: '',
@@ -58,6 +61,7 @@ const parserFunc = (data) => {
 
     const errorNode = chanel.querySelector('parsererror');
     if (errorNode) {
+      console.log(errorNode.textContent);
       reject();
     } else {
       resolve(chanel);
@@ -101,12 +105,23 @@ const createChanell = (chanel, url) => {
 };
 
 function urlProcessing(validUrl) {
-  axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}`)
-    .then((response) => parserFunc(response.data.contents))
+  //console.log(validUrl);
+  const axiosInstance = axios.create({
+  params: {
+    t: new Date().getTime()
+  }
+});
+  axiosInstance
+    .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}`)
+    .then((response) => {
+      console.log(response);
+      return parserFunc(response.data.contents);
+    })
     .catch(() => {
       watchedState.validateStatus = 'loadError';
     })
     .then((chanel) => {
+      //console.log(chanel);
       linkList = [validUrl, ...linkList];
       createChanell(chanel, validUrl);
       form.reset();
@@ -116,12 +131,13 @@ function urlProcessing(validUrl) {
 function validateFunc(e) {
   e.preventDefault();
   const link = formInput.value;
+  //console.log(linkList);
 
   if (linkList.includes(link)) {
     watchedState.validateStatus = 'exists';
   } else {
     schema
-      .validate(formInput.value)
+      .validate(link)
       .then(() => {
         watchedState.validateStatus = 'valid';
         urlProcessing(link);
@@ -134,20 +150,32 @@ function validateFunc(e) {
 
 function checkFeeds() {
   const feeds = document.getElementsByClassName('feeds')[0].getElementsByTagName('li');
+  //console.log(feeds);
   [...feeds].forEach((feed) => {
+//console.log(feed.getAttribute('url-chanel'));
     const postsList = [...document.getElementsByClassName('posts')[0]
       .getElementsByTagName('li')]
       .filter((listItem) => listItem.getAttribute('feed-id') === feed.id);
     const postsTitles = postsList.map((post) => post.getElementsByTagName('a')[0].textContent.trim());
-
-    axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}`)
-      .then((response) => parserFunc(response.data.contents))
+    //console.log(postsTitles);
+    const axiosInstance = axios.create({
+    params: {
+      t: new Date().getTime()
+    }
+    });
+    axiosInstance.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}`)
+      .then((response) => {
+        console.log(response);
+      return parserFunc(response.data.contents)
+    })
       .catch(() => {
       })
       .then((chanel) => {
+        //console.log([...chanel.getElementsByTagName('item')][0].getElementsByTagName('title')[0].textContent.trim());
         const loadedPosts = [...chanel.getElementsByTagName('item')]
           .map((item) => item.getElementsByTagName('title')[0].textContent.trim());
 
+          //console.log(loadedPosts);
         if (difference(postsTitles, loadedPosts).length !== 0) {
           [...postsList].forEach((post) => post.remove());
           fillPostsCard(chanel, feed.id);
