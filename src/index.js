@@ -79,6 +79,7 @@ const fillPostsCard = (chanel, id) => {
   const card = document.getElementsByClassName('posts')[0]
     .getElementsByTagName('ul')[0];
   const posts = chanel.getElementsByTagName('item');
+  //console.log([...posts].slice(0, 1)[0]);
   let prevPost = renderPost([...posts].slice(0, 1)[0], id, i18nInstance);
   prevPost.addEventListener('click', btnViewClick);
   card.prepend(prevPost);
@@ -111,10 +112,15 @@ function urlProcessing(validUrl) {
     t: new Date().getTime()
   }
 });
+axiosInstance.defaults.headers = {
+  'Cache-Control': 'no-cache',
+  'Pragma': 'no-cache',
+  'Expires': '0',
+};
   axiosInstance
     .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}`)
     .then((response) => {
-      console.log(response);
+    //console.log(response);
       return parserFunc(response.data.contents);
     })
     .catch(() => {
@@ -141,6 +147,7 @@ function validateFunc(e) {
       .then(() => {
         watchedState.validateStatus = 'valid';
         urlProcessing(link);
+        return true;
       })
       .catch(() => {
         watchedState.validateStatus = 'invalid';
@@ -157,7 +164,7 @@ function checkFeeds() {
       .getElementsByTagName('li')]
       .filter((listItem) => listItem.getAttribute('feed-id') === feed.id);
     const postsTitles = postsList.map((post) => post.getElementsByTagName('a')[0].textContent.trim());
-    //console.log(postsTitles);
+    //console.log(postsList[0]);
     const axiosInstance = axios.create({
     params: {
       t: new Date().getTime()
@@ -165,20 +172,32 @@ function checkFeeds() {
     });
     axiosInstance.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}`)
       .then((response) => {
-        console.log(response);
+        //console.log(response);
       return parserFunc(response.data.contents)
     })
       .catch(() => {
       })
       .then((chanel) => {
-        //console.log([...chanel.getElementsByTagName('item')][0].getElementsByTagName('title')[0].textContent.trim());
+        //console.log(chanel);
+
         const loadedPosts = [...chanel.getElementsByTagName('item')]
           .map((item) => item.getElementsByTagName('title')[0].textContent.trim());
 
-          //console.log(loadedPosts);
-        if (difference(postsTitles, loadedPosts).length !== 0) {
-          [...postsList].forEach((post) => post.remove());
-          fillPostsCard(chanel, feed.id);
+          //console.log(difference(postsTitles, loadedPosts));
+          const diff = difference(loadedPosts, postsTitles);
+        if (diff.length !== 0) {
+          const newPosts = [...chanel.getElementsByTagName('item')]
+          .filter((item) => item.textContent.includes(diff[0]));
+          [...newPosts].forEach((post) => {
+            const card = document.getElementsByClassName('posts')[0]
+              .getElementsByTagName('ul')[0];
+            //console.log([...posts].slice(0, 1)[0]);
+            let newPost = renderPost(post, feed.id, i18nInstance);
+            newPost.addEventListener('click', btnViewClick);
+            card.prepend(newPost);
+            //console.log(post);
+          });
+          //fillPostsCard(chanel, feed.id);
         }
       });
   });
