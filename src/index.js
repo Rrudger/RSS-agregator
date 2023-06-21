@@ -114,7 +114,7 @@ function urlProcessing(validUrl) {
 });
 
   axios
-    .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}&timestamp=${new Date().getTime()}`,
+    .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}&disableCache=1`,
     {
       //headers: {'test': 'test'}
     })
@@ -169,7 +169,7 @@ function checkFeeds() {
       t: new Date().getTime()
     }
     });
-    axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}&timestamp=${new Date().getTime()}`)
+    axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}&disableCache=1`)
       .then((response) => {
         //console.log(response);
       return parserFunc(response.data.contents)
