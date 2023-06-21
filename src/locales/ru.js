@@ -6,6 +6,7 @@ export default {
       invalid: 'Ссылка должна быть валидным URL',
       exists: 'RSS уже существует',
       loadError: 'Ресурс не содержит валидный RSS',
+      reteError: 'Ошибка сети',
     },
     cards: {
       feeds: 'Фиды',

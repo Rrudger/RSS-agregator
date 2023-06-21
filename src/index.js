@@ -61,6 +61,7 @@ const parserFunc = (data) => {
 
     const errorNode = chanel.querySelector('parsererror');
     if (errorNode) {
+      watchedState.validateStatus = 'loadError';
       console.log(errorNode.textContent);
       reject();
     } else {
@@ -123,7 +124,7 @@ function urlProcessing(validUrl) {
       return parserFunc(response.data.contents);
     })
     .catch(() => {
-      watchedState.validateStatus = 'loadError';
+      watchedState.validateStatus = 'reteError';
     })
     .then((chanel) => {
       //console.log(chanel);
@@ -175,6 +176,7 @@ function checkFeeds() {
       return parserFunc(response.data.contents)
     })
       .catch(() => {
+        watchedState.validateStatus = 'reteError';
       })
       .then((chanel) => {
         //console.log(chanel);
