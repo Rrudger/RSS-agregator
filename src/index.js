@@ -119,12 +119,15 @@ function urlProcessing(validUrl) {
     {
       //headers: {'test': 'test'}
     })
+    .catch(() => {
+      watchedState.validateStatus = 'reteError';
+    })
     .then((response) => {
     //console.log(response);
       return parserFunc(response.data.contents);
     })
     .catch(() => {
-      watchedState.validateStatus = 'reteError';
+      watchedState.validateStatus = 'loadError';
     })
     .then((chanel) => {
       //console.log(chanel);
@@ -171,12 +174,15 @@ function checkFeeds() {
     }
     });
     axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}&disableCache=1`)
+      .catch(() => {
+        watchedState.validateStatus = 'reteError';
+      })
       .then((response) => {
         //console.log(response);
       return parserFunc(response.data.contents)
     })
       .catch(() => {
-        watchedState.validateStatus = 'reteError';
+        watchedState.validateStatus = 'loadError';
       })
       .then((chanel) => {
         //console.log(chanel);
