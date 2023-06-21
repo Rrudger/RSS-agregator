@@ -62,7 +62,7 @@ const parserFunc = (data) => {
     const errorNode = chanel.querySelector('parsererror');
     if (errorNode) {
       watchedState.validateStatus = 'loadError';
-      console.log(errorNode.textContent);
+      //console.log(errorNode.textContent);
       reject();
     } else {
       resolve(chanel);
@@ -106,50 +106,43 @@ const createChanell = (chanel, url) => {
   fillPostsCard(chanel, id);
 };
 
-function urlProcessing(validUrl) {
-  //console.log(validUrl);
-  const axiosInstance = axios.create({
-  params: {
-    t: new Date().getTime()
-  }
-});
-
+function urlProcessing(validUrl, check) {//в зависимости от check или изменяет статус формы или просто проверяет урл
   axios
-    .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}&disableCache=1`,
-    {
-      //headers: {'test': 'test'}
-    })
-    .catch(() => {
-      watchedState.validateStatus = 'reteError';
-    })
+    .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}&disableCache=1`)
+    .catch((err) => watchedState.validateStatus = 'reteError')
     .then((response) => {
     //console.log(response);
       return parserFunc(response.data.contents);
     })
-    .catch(() => {
-      watchedState.validateStatus = 'loadError';
-    })
     .then((chanel) => {
       //console.log(chanel);
+      if (!chanel) {
+        watchedState.validateStatus = 'loadError';
+      } else {
+      watchedState.validateStatus = 'valid';
       linkList = [validUrl, ...linkList];
       createChanell(chanel, validUrl);
       form.reset();
+    }
     });
 }
 
-function validateFunc(e) {
+function initFunc(e) { //проверяет валидность урл добавляет в список
   e.preventDefault();
   const link = formInput.value;
+  //console.log('Check');
+  //console.log(link);
   //console.log(linkList);
 
   if (linkList.includes(link)) {
     watchedState.validateStatus = 'exists';
+
   } else {
     schema
       .validate(link)
       .then(() => {
-        watchedState.validateStatus = 'valid';
-        urlProcessing(link);
+        urlProcessing(link, false);
+
         return true;
       })
       .catch(() => {
@@ -174,19 +167,14 @@ function checkFeeds() {
     }
     });
     axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}&disableCache=1`)
-      .catch(() => {
-        watchedState.validateStatus = 'reteError';
-      })
+      .catch()
       .then((response) => {
         //console.log(response);
       return parserFunc(response.data.contents)
     })
-      .catch(() => {
-        watchedState.validateStatus = 'loadError';
-      })
       .then((chanel) => {
         //console.log(chanel);
-
+if (chanel){
         const loadedPosts = [...chanel.getElementsByTagName('item')]
           .map((item) => item.getElementsByTagName('title')[0].textContent.trim());
 
@@ -206,14 +194,15 @@ function checkFeeds() {
           });
           //fillPostsCard(chanel, feed.id);
         }
+      }
       });
   });
 }
 
-form.addEventListener('submit', validateFunc);
-
+form.addEventListener('submit', initFunc);
 const timeOutFunc = () => {
   setTimeout(() => {
+    console.log(linkList);
     timeOutFunc();
     checkFeeds();
   }, 5000);
