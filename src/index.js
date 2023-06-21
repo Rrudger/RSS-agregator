@@ -112,13 +112,12 @@ function urlProcessing(validUrl) {
     t: new Date().getTime()
   }
 });
-axiosInstance.defaults.headers = {
-  'Cache-Control': 'no-cache',
-  'Pragma': 'no-cache',
-  'Expires': '0',
-};
-  axiosInstance
-    .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}`)
+
+  axios
+    .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}&timestamp=${new Date().getTime()}`,
+    {
+      //headers: {'test': 'test'}
+    })
     .then((response) => {
     //console.log(response);
       return parserFunc(response.data.contents);
@@ -170,7 +169,7 @@ function checkFeeds() {
       t: new Date().getTime()
     }
     });
-    axiosInstance.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}`)
+    axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.getAttribute('url-chanel'))}&timestamp=${new Date().getTime()}`)
       .then((response) => {
         //console.log(response);
       return parserFunc(response.data.contents)
