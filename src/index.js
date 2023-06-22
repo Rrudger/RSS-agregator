@@ -91,19 +91,19 @@ const fillPostsCard = (chanel, id) => {
   let link = firstItem.getElementsByTagName('link')[0].textContent.trim();
   let title = firstItem.getElementsByTagName('title')[0].textContent.trim();
   let desctiption = firstItem.getElementsByTagName('description')[0].textContent.trim();
-  let prevPost = renderPost(link, title, id, i18nInstance);
+  let firsPost = renderPost(link, title, id, i18nInstance);
   descriptionsLinksList.set(title, { desctiption, link });
-  prevPost.addEventListener('click', btnViewClick);
-  card.prepend(prevPost);
+  firstPost.addEventListener('click', btnViewClick);
+  card.prepend(firstPost);
   [...posts].slice(1).forEach((post) => {
     link = post.getElementsByTagName('link')[0].textContent.trim();
     title = post.getElementsByTagName('title')[0].textContent.trim();
     desctiption = post.getElementsByTagName('description')[0].textContent.trim();
     descriptionsLinksList.set(title, { desctiption, link });
     const newPost = renderPost(link, title, id, i18nInstance);
-    prevPost.after(newPost);
-    prevPost = newPost;
-    prevPost.addEventListener('click', btnViewClick);
+    firstPost.after(newPost);
+    firstPost = newPost;
+    firstPost.addEventListener('click', btnViewClick);
   });
 };
 
