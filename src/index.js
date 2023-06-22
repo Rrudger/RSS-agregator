@@ -15,7 +15,7 @@ import {
   markViewedPost,
   createCard,
   renderFeed,
-  renderPost,
+  createPost,
 } from './formChangeFunctions.js';
 
 const schema = yup.string().required().url();
@@ -91,7 +91,7 @@ const fillPostsCard = (chanel, id) => {
   let link = firstItem.getElementsByTagName('link')[0].textContent.trim();
   let title = firstItem.getElementsByTagName('title')[0].textContent.trim();
   let desctiption = firstItem.getElementsByTagName('description')[0].textContent.trim();
-  let primoApp = renderPost(link, title, id, i18nInstance);
+  let primoApp = createPost(link, title, id, i18nInstance);
   descriptionsLinksList.set(title, { desctiption, link });
   primoApp.addEventListener('click', btnViewClick);
   card.prepend(primoApp);
@@ -100,7 +100,7 @@ const fillPostsCard = (chanel, id) => {
     title = post.getElementsByTagName('title')[0].textContent.trim();
     desctiption = post.getElementsByTagName('description')[0].textContent.trim();
     descriptionsLinksList.set(title, { desctiption, link });
-    const createdPost = renderPost(link, title, id, i18nInstance);
+    const createdPost = createPost(link, title, id, i18nInstance);
     primoApp.after(createdPost);
     primoApp = createdPost;
     primoApp.addEventListener('click', btnViewClick);
@@ -178,7 +178,7 @@ function checkFeeds() {
               .filter((item) => item.textContent.includes(diff[0]));
             [...newPosts].forEach((post) => {
               const card = document.getElementsByClassName('posts')[0].getElementsByTagName('ul')[0];
-              const newPost = renderPost(post, feed.id, i18nInstance);
+              const newPost = createPost(post, feed.id, i18nInstance);
               newPost.addEventListener('click', btnViewClick);
               card.prepend(newPost);
             });
