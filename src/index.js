@@ -10,6 +10,7 @@ import onChange from 'on-change';
 import * as yup from 'yup';
 import i18n from 'i18next';
 import resources from './locales/ru.js';
+import Modal from 'bootstrap/js/src/modal';
 import {
   changeFormStatus,
   markViewedPost,
@@ -21,7 +22,9 @@ import {
 const schema = yup.string().required().url();
 const form = document.getElementsByClassName('rss-form')[0];
 const formInput = document.getElementById('url-input');
+const modal = document.getElementById('modal');
 let linkList = [];
+let descriptionsLinksList = new Map();
 const i18nInstance = i18n.createInstance();
 i18nInstance
   .init({
@@ -61,7 +64,7 @@ const parserFunc = (data) => {
 
     const errorNode = chanel.querySelector('parsererror');
     if (errorNode) {
-      watchedState.validateStatus = 'loadError';
+      //watchedState.validateStatus = 'loadError';
       //console.log(errorNode.textContent);
       reject();
     } else {
@@ -71,8 +74,23 @@ const parserFunc = (data) => {
 };
 
 const btnViewClick = (e) => {
+  e.preventDefault();
   if (e.target.textContent === i18nInstance.t('buttons.view')) {
     watchedState.viewedPosts = e.target.parentNode.id;
+
+
+const myModal = new Modal(document.getElementById('modal'), {
+keyboard: false
+});
+modal.getElementsByTagName('h5')[0].textContent = e.target.parentNode.getElementsByTagName('a')[0].textContent;
+const postData = descriptionsLinksList.get(e.target.parentNode.getElementsByTagName('a')[0].textContent.trim());
+modal.getElementsByClassName('modal-body')[0].textContent = postData.desctiption;
+modal.getElementsByClassName('full-article')[0].href = postData.link;
+myModal.show();
+
+
+    //console.log(modal.getElementsByTagName('h5'));
+
   }
 };
 
@@ -80,12 +98,23 @@ const fillPostsCard = (chanel, id) => {
   const card = document.getElementsByClassName('posts')[0]
     .getElementsByTagName('ul')[0];
   const posts = chanel.getElementsByTagName('item');
-  //console.log([...posts].slice(0, 1)[0]);
-  let prevPost = renderPost([...posts].slice(0, 1)[0], id, i18nInstance);
+//console.log([...posts].slice(0, 1)[0].getElementsByTagName('description')[0].textContent);
+const firstItem = [...posts].slice(0, 1)[0];
+let link = firstItem.getElementsByTagName('link')[0].textContent.trim();
+let title = firstItem.getElementsByTagName('title')[0].textContent.trim();
+let desctiption = firstItem.getElementsByTagName('description')[0].textContent.trim();
+  let prevPost = renderPost(link, title, id, i18nInstance);
+//console.log(firstItem.getElementsByTagName('description')[0].textContent);
+  descriptionsLinksList.set(title, {desctiption: desctiption, link: link});
+
   prevPost.addEventListener('click', btnViewClick);
   card.prepend(prevPost);
   [...posts].slice(1).forEach((post) => {
-    const newPost = renderPost(post, id, i18nInstance);
+    let link = post.getElementsByTagName('link')[0].textContent.trim();
+    let title = post.getElementsByTagName('title')[0].textContent.trim();
+    let desctiption = post.getElementsByTagName('description')[0].textContent.trim();
+    descriptionsLinksList.set(title, {desctiption: desctiption, link: link});
+    const newPost = renderPost(link, title, id, i18nInstance);
     prevPost.after(newPost);
     prevPost = newPost;
     prevPost.addEventListener('click', btnViewClick);
@@ -106,7 +135,7 @@ const createChanell = (chanel, url) => {
   fillPostsCard(chanel, id);
 };
 
-function urlProcessing(validUrl, check) {//в зависимости от check или изменяет статус формы или просто проверяет урл
+function urlProcessing(validUrl) {//в зависимости от check или изменяет статус формы или просто проверяет урл
   axios
     .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(validUrl)}&disableCache=1`)
     .catch((err) => watchedState.validateStatus = 'reteError')
@@ -141,7 +170,7 @@ function initFunc(e) { //проверяет валидность урл доба
     schema
       .validate(link)
       .then(() => {
-        urlProcessing(link, false);
+        urlProcessing(link);
 
         return true;
       })

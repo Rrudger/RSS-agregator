@@ -39,7 +39,7 @@ function renderFeed(chanel, id, url) {
   return listItem;
 }
 
-function renderPost(post, feedId, i18nInstance) {
+function renderPost(postLink, postTitle, feedId, i18nInstance) {
   const postId = uniqueId('post_');
   const modalId = `modal_${postId}`;
   const modalIdBtn = `#${modalId}`;
@@ -50,30 +50,16 @@ function renderPost(post, feedId, i18nInstance) {
   listItem.classList.add(...['list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0']);
   listItem.setAttribute('feed-id', feedId);
   listItem.setAttribute('id', postId);
-  listItem.innerHTML = `<a href=${post.getElementsByTagName('link')[0].textContent}
+  listItem.innerHTML = `<a href=${postLink}
   class="fw-bold" target="_blank" rel="noopener noreferrer">
-  ${post.getElementsByTagName('title')[0].textContent}</a>
-  <button type="button" class="btn btn-outline-primary btn-sm"
-   data-bs-toggle="modal" data-bs-target=${modalIdBtn}>${i18nInstance.t('buttons.view')}</button>
-   <div class="modal fade" id="${modalId}" tabindex='-1' aria-hidden='true' aria-labelledby='${modalLabel}'>
-   <div class="modal-dialog">
-     <div class="modal-content">
-       <div class="modal-header">
-         <h5 class="modal-title" id=${modalLabel}>${post.getElementsByTagName('title')[0].textContent}</h5>
-         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-       </div>
-       <div class="modal-body">
-         ${post.getElementsByTagName('description')[0].textContent}
-       </div>
-       <div class="modal-footer">
-         <a class="btn btn-primary full-article" href=${post.getElementsByTagName('link')[0].textContent} role="button" target="_blank" rel="noopener noreferrer">Читать полностью </a>
-         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-       </div>
-     </div>
-   </div>
-   </div>`;
+  ${postTitle}</a>
+  <button type="button" class="btn btn-outline-primary btn-sm">${i18nInstance.t('buttons.view')}</button>`;
 
   return listItem;
+}
+
+function fillModal () {
+
 }
 
 function createCard(cardName) {
