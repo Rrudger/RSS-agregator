@@ -91,9 +91,9 @@ const fillPostsCard = (chanel, id) => {
   let link = firstItem.getElementsByTagName('link')[0].textContent.trim();
   let title = firstItem.getElementsByTagName('title')[0].textContent.trim();
   let desctiption = firstItem.getElementsByTagName('description')[0].textContent.trim();
-  let firstPost = renderPost(link, title, id, i18nInstance);
+  let primoApp = renderPost(link, title, id, i18nInstance);
   descriptionsLinksList.set(title, { desctiption, link });
-  firstPost.addEventListener('click', btnViewClick);
+  primoApp.addEventListener('click', btnViewClick);
   card.prepend(firstPost);
   [...posts].slice(1).forEach((post) => {
     link = post.getElementsByTagName('link')[0].textContent.trim();
@@ -101,9 +101,9 @@ const fillPostsCard = (chanel, id) => {
     desctiption = post.getElementsByTagName('description')[0].textContent.trim();
     descriptionsLinksList.set(title, { desctiption, link });
     const createdPost = renderPost(link, title, id, i18nInstance);
-    firstPost.after(createdPost);
-    firstPost = createdPost;
-    firstPost.addEventListener('click', btnViewClick);
+    primoApp.after(createdPost);
+    primoApp = createdPost;
+    primoApp.addEventListener('click', btnViewClick);
   });
 };
 
