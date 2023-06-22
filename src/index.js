@@ -94,7 +94,7 @@ const fillPostsCard = (chanel, id) => {
   let primoApp = renderPost(link, title, id, i18nInstance);
   descriptionsLinksList.set(title, { desctiption, link });
   primoApp.addEventListener('click', btnViewClick);
-  card.prepend(firstPost);
+  card.prepend(primoApp);
   [...posts].slice(1).forEach((post) => {
     link = post.getElementsByTagName('link')[0].textContent.trim();
     title = post.getElementsByTagName('title')[0].textContent.trim();
