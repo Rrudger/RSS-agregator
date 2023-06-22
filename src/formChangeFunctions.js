@@ -41,10 +41,6 @@ function renderFeed(chanel, id, url) {
 
 function renderPost(postLink, postTitle, feedId, i18nInstance) {
   const postId = uniqueId('post_');
-  const modalId = `modal_${postId}`;
-  const modalIdBtn = `#${modalId}`;
-  const modalLabel = `${modalId}Label`;
-
   const listItem = document.createElement('li');
 
   listItem.classList.add(...['list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0']);
@@ -56,10 +52,6 @@ function renderPost(postLink, postTitle, feedId, i18nInstance) {
   <button type="button" class="btn btn-outline-primary btn-sm">${i18nInstance.t('buttons.view')}</button>`;
 
   return listItem;
-}
-
-function fillModal () {
-
 }
 
 function createCard(cardName) {
