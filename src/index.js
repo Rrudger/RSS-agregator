@@ -64,7 +64,7 @@ const parserFunc = (data) => {
 
     const errorNode = chanel.querySelector('parsererror');
     if (errorNode) {
-      //watchedState.validateStatus = 'loadError';
+      watchedState.validateStatus = 'loadError';
       //console.log(errorNode.textContent);
       reject();
     } else {
