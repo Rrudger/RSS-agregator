@@ -39,7 +39,7 @@ function renderFeed(chanel, id, url) {
   return listItem;
 }
 
-function renderPost(postLink, postTitle, feedId, i18nInstance) {
+function createPost(postLink, postTitle, feedId, i18nInstance) {
   const postId = uniqueId('post_');
   const listItem = document.createElement('li');
 
@@ -68,5 +68,5 @@ export {
   markViewedPost,
   createCard,
   renderFeed,
-  renderPost,
+  createPost,
 };
